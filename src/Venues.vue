@@ -30,16 +30,27 @@
         venues: [],
         category: "",
         model: null,
-        cities: ['', 'New Zealand', 'England', 'Christchurch'],
-        selected: "",
         baseUrl: "http://localhost:4941/api/v1/",
+        cityKeyword: "",
         nameKeyword: "",
         categoryKeyword: "",
         categories: [],
-        starRatingSliderValue: 0
+        starRatingSliderValue: 0,
+        costRatingSliderValue: 5,
+        sliderTickValues: ['0', '1', '2', '3', '4', '5'],
+        currentPage: 1,
+        rowsPerPage: 10
       }
     },
     computed: {
+      numberRows() {
+        return this.venues.length;
+      },
+      cities() {
+        let cities = this.venues.map(a => a.city)
+        cities.unshift("");
+        return cities;
+      },
       filteredVenueTableData() {
         let filteredData = this.unfilteredVenueTableData;
 
@@ -51,28 +62,32 @@
           filteredData = filteredData.filter(item => item.category.toLowerCase() === this.categoryKeyword.toLowerCase());
         }
 
-        filteredData = filteredData.filter(item => item.starRating > this.starRatingSliderValue);
+        if (this.cityKeyword) {
+          console.log(filteredData);
+          filteredData = filteredData.filter(item => item.city.toLowerCase() === this.cityKeyword.toLowerCase());
+        }
+
+        filteredData = filteredData.filter(item => item.starRating >= this.starRatingSliderValue);
+        filteredData = filteredData.filter(item => item.costRating <= this.costRatingSliderValue);
 
         return filteredData;
-
-
-        // return (this.nameKeyword || this.categoryKeyword)
-        //   ? this.unfilteredVenueTableData.filter(item =>
-        //     item.name.toLowerCase().includes(this.nameKeyword.toLowerCase()) &&
-        //     item.category.toLowerCase() === this.categoryKeyword.toLowerCase()
-        //   ) : this.unfilteredVenueTableData
       }
     },
-    mounted() {
-        this.generateTable();
-        this.getCategories();
+    created() {
+        this.initialise()
     },
     methods: {
+      initialise: function() {
+        this.getVenues()
+          .then((venues) => {
+            this.generateTable(venues);
+          }
+        );
+        this.getCategories();
+      },
       getVenues: function () {
-        let url = this.baseUrl + "venues/";
-        if (this.selected !== "") {
-          url += "?city=" + this.selected;
-        }
+        let url = this.baseUrl + "venues";
+        url += "/?sortBy=STAR_RATING";
         return this.$http.get(url)
           .then(function (response) {
             this.venues = response.data;
@@ -86,8 +101,6 @@
         var photoName = "";
 
         var photos = data.photos;
-        console.log("here are data");
-        console.log(data);
         for (var i = 0; i < photos.length; i++) {
           if (photos[i].isPrimary == true) {
             photoName = photos[i].photoFilename;
@@ -99,33 +112,29 @@
         }
         return "photo";
       },
-      generateTable: function () {
-        this.getVenues()
-          .then((venues) => {
-            this.unfilteredVenueTableData = [];
-            for (var i = 0; i < this.venues.length; i++) {
-              let url = this.baseUrl + "venues/" + this.venues[i].venueId;
-              let venueData = {};
-              let venue = this.venues[i];
+      generateTable: function (venues) {
+          this.unfilteredVenueTableData = [];
+          for (var i = 0; i < venues.length; i++) {
+            let url = this.baseUrl + "venues/" + venues[i].venueId;
+            let venueData = {};
+            let venue = venues[i];
 
-              this.$http.get(url)
-                .then(function (response) {
-                  return response.data;
-                }, function (error) {
-                  this.error = error;
-                  this.errorFlag = true;
-                }).then(function(data) {
-                  // venueData.photo = this.getVenuePhoto(venue.venueId, data);
-                  venueData.name = data.venueName;
-                  venueData.city = data.city;
-                  venueData.category = data.category.categoryName;
-                  venueData.starRating = venue.meanStarRating;
-                  venueData.costRating = venue.modeCostRating;
-                  this.unfilteredVenueTableData.push(venueData);
-              });
-            }
-          });
-
+            this.$http.get(url)
+              .then(function (response) {
+                return response.data;
+              }, function (error) {
+                this.error = error;
+                this.errorFlag = true;
+              }).then(function(data) {
+                // venueData.photo = this.getVenuePhoto(venue.venueId, data);
+                venueData.name = data.venueName;
+                venueData.city = data.city;
+                venueData.category = data.category.categoryName;
+                venueData.starRating = venue.meanStarRating;
+                venueData.costRating = venue.modeCostRating;
+                this.unfilteredVenueTableData.push(venueData);
+            });
+          }
       },
       getCategories() {
         this.$http.get(this.baseUrl + 'categories')
@@ -140,33 +149,32 @@
     }
   }
 </script>
-<template>
+
+<template class="background">
 
   <div>
     <div v-if = "errorFlag" style = "color: red;">
       {{ error }}
     </div>
-    <div id="venues">
-
+    <div>
       <v-app>
         <v-container>
         <v-flex>
-        <v-card>
+        <v-card id="venues">
           <v-card-title class="headline font-weight-regular blue-grey white--text">Venues</v-card-title>
           <v-subheader class="pa-0">Choose a city to explore</v-subheader>
 
           <v-autocomplete
-            v-model="selected"
+            v-model="cityKeyword"
             :items="cities"
             prepend-icon="mdi-city"
           ></v-autocomplete>
-          <v-card-actions class="justify-center">
-            <v-btn large flat color="green" v-on:click="generateTable()">Search</v-btn>
-          </v-card-actions>
 
           <div>
-            <b-button v-b-toggle.collapse-1 variant="primary">Filters</b-button>
-            <b-collapse id="collapse-1" class="mt-2">
+            <div class="text-right">
+              <b-button v-b-toggle.filters class="button" size="lg">Filters</b-button>
+            </div>
+            <b-collapse id="filters" class="mt-2">
               <b-card>
                 <b-form-group>
                   <b-input-group>
@@ -188,19 +196,37 @@
                     label="Category"
                   ></v-select>
                 </v-flex>
-                <VueSlideBar
-                  v-model="this.starRatingSliderValue"
-                  :min="0"
-                  :max="5">
-                </VueSlideBar>
+
+                <v-slider
+                  v-model="starRatingSliderValue"
+                  :max="5"
+                  :tick-labels="sliderTickValues"
+                ></v-slider>
+
+                <v-slider
+                  v-model="costRatingSliderValue"
+                  :max="5"
+                  :tick-labels="sliderTickValues"
+                ></v-slider>
+
               </b-card>
             </b-collapse>
           </div>
 
 
+          <b-pagination
+            v-model="currentPage"
+            :total-rows="numberRows"
+            :per-page="rowsPerPage"
+            aria-controls="venue-table"
+          ></b-pagination>
+
           <b-table
+            id="venue-table"
             hover
             :items="this.filteredVenueTableData"
+            :per-page="rowsPerPage"
+            :current-page="currentPage"
             :fields="this.fields">
           </b-table>
 
@@ -210,15 +236,22 @@
         </v-container>
       </v-app>
 
-
-      <button type="button" class="btn btn-primary"
-              v-on:click="getVenues()">
-        Search Venues
-      </button>
     </div>
   </div>
 </template>
 
+
+<style lang="css" scoped>
+  #venues {
+    align-self: center;
+    padding: 20px;
+    background: snow;
+  }
+  .button {
+    background-color: white;
+    color: black;
+  }
+</style>
 
 
 

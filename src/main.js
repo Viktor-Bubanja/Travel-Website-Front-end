@@ -45,9 +45,12 @@ const router = new VueRouter({
   mode: 'history'
 });
 
+Vue.component('vue-slide-bar', VueSlideBar);
+
 
 new Vue({
   el: '#app',
   router: router,
   render: h => h(App)
 });
+
