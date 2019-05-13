@@ -1,11 +1,13 @@
 import Vue from 'vue'
-import App from './App.vue'
-import Home from './Home.vue'
+import App from './components/App.vue'
+import Home from './components/Home.vue'
+import Venues from './components/venues/Venues'
+import Venue from './components/venue/Venue.vue'
 import 'vuetify/dist/vuetify.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import Venues from './Venues.vue'
 import colors from 'vuetify/es5/util/colors'
+import SignUp from './components/signUpForm/SignUpForm'
 
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue);
@@ -37,6 +39,14 @@ const routes = [
   {
     path: "/venues",
     component: Venues
+  },
+  {
+    path: "/venues/:venueName",
+    component: Venue
+  },
+  {
+    path: "/signUp",
+    component: SignUp
   }
 ];
 
