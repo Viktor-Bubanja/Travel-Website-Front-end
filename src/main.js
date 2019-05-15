@@ -7,7 +7,10 @@ import 'vuetify/dist/vuetify.css';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import colors from 'vuetify/es5/util/colors'
-import SignUp from './components/signUpForm/SignUpForm'
+import SignUp from './components/signUpForm/SignUpForm.vue'
+
+import Vuelidate from 'vuelidate';
+Vue.use(Vuelidate);
 
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue);

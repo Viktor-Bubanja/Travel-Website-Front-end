@@ -1,80 +1,80 @@
 <template>
-  <div>
-    <div>
-      <v-app>
-        <v-container>
-          <v-flex>
-            <v-card>
-              <v-card-title class="headline font-weight-regular blue-grey white--text">Sign up</v-card-title>
-              <div align="center">
-                <v-form ref="form" lazy-validation>
-                  <v-flex xs12 sm6 md3>
-                    <v-text-field
-                      v-model="form.firstName"
-                      label="First name"
-                      :rules="nameRules"
-                      required
-                    ></v-text-field>
-                  </v-flex>
+<div id="app">
+  <v-app>
+    <v-layout justify-center>
+      <v-flex xs12 sm10 md8 lg6>
+        <v-card ref="form">
+          <v-card-text>
+            <v-text-field
+              ref="givenName"
+              v-model="givenName"
+              :rules="rules.givenNameRules"
+              :error-messages="errorMessages"
+              label="First Name"
+              required
+            ></v-text-field>
+            <v-text-field
+              ref="familyName"
+              v-model="familyName"
+              :rules="rules.familyNameRules"
+              :error-messages="errorMessages"
+              label="Last Name"
+              required
+            ></v-text-field>
+            <v-text-field
+              ref="username"
+              v-model="username"
+              :rules="rules.usernameRules"
+              label="Username"
+              required
+            ></v-text-field>
+            <v-text-field
+              ref="email"
+              v-model="email"
+              :rules="rules.emailRules"
+              label="Email"
+              required
+              validate-on-blur
+            ></v-text-field>
+            <v-text-field
+              type="password"
+              ref="password"
+              v-model="password"
+              :rules="[() => !!password || 'Password is required']"
+              label="Password"
+              required
+            ></v-text-field>
+            <v-text-field
+              type="password"
+              ref="confirmPassword"
+              v-model="confirmPassword"
+              :rules="[() => !!confirmPassword || 'Confirmed password is required',
+              (input) => input === password || 'Passwords do not match, try again']"
+              label="Confirm password"
+              required
+              validate-on-blur
+            ></v-text-field>
+          </v-card-text>
+          <v-divider class="mt-5"></v-divider>
+          <v-card-actions>
+            <v-btn flat>Cancel</v-btn>
+            <v-spacer></v-spacer>
+            <v-slide-x-reverse-transition>
+              <v-tooltip
+                v-if="formHasErrors"
+                left
+              >
+                <span>Refresh form</span>
+              </v-tooltip>
+            </v-slide-x-reverse-transition>
+            <v-btn color="primary" flat @click="submit">Submit</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
+  </v-app>
+</div>
 
-                  <v-flex xs12 sm6 md3>
-                    <v-text-field
-                      v-model="form.lastName"
-                      label="Last name"
-                      required
-                      :error-messages="errorMessage('Last name')"
-                      @blur="validate(form.lastName)"
-                    ></v-text-field>
-                  </v-flex>
-
-                  <v-flex xs12 sm6 md3>
-                    <v-text-field
-                      v-model="form.userName"
-                      label="Username"
-                      required
-                    ></v-text-field>
-                  </v-flex>
-
-                  <v-flex xs12 sm6 md3>
-                    <v-text-field
-                      v-model="form.email"
-                      label="Email"
-                      required
-                    ></v-text-field>
-                  </v-flex>
-
-                  <v-flex xs12 sm6 md3>
-                    <v-text-field type="password"
-                      v-model="form.password"
-                      label="Password"
-                      required
-                    ></v-text-field>
-                  </v-flex>
-
-                  <v-flex xs12 sm6 md3>
-                    <v-text-field type="password"
-                      v-model="form.confirmPassword"
-                      label="Confirm password"
-                      required
-                    ></v-text-field>
-                  </v-flex>
-
-                <v-btn flat
-                  @click="submit"
-                  :disabled="!valid"
-                >SIGN UP</v-btn>
-                </v-form>
-
-                <form method="post" action="this.baseUrl + users/" id="signUpForm"></form>
-            </div>
-
-            </v-card>
-          </v-flex>
-        </v-container>
-      </v-app>
-
-    </div>
-  </div>
 </template>
 
-<script src="./SignUpForm.js"></script>
+<script src="./signUpForm.js"></script>

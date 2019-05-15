@@ -12,6 +12,7 @@
   "dependencies": {
     "bootstrap-vue": "^2.0.0-rc.19",
     "mdi-vue": "^0.2.14",
+    "vee-validate": "^2.2.7",
     "vue": "^2.5.11",
     "vue-dynamic-dropdown": "^1.0.9",
     "vue-resource": "^1.5.1",
@@ -19,6 +20,7 @@
     "vue-select": "^3.1.0",
     "vue-slide-bar": "^1.1.9",
     "vuejs-auto-complete": "^0.9.0",
+    "vuelidate": "^0.7.4",
     "vuetify": "^1.5.14"
   },
   "browserslist": [
