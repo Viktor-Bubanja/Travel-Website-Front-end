@@ -40,7 +40,7 @@
               type="password"
               ref="password"
               v-model="password"
-              :rules="[() => !!password || 'Password is required']"
+              :rules="rules.passwordRules"
               label="Password"
               required
             ></v-text-field>
@@ -48,8 +48,7 @@
               type="password"
               ref="confirmPassword"
               v-model="confirmPassword"
-              :rules="[() => !!confirmPassword || 'Confirmed password is required',
-              (input) => input === password || 'Passwords do not match, try again']"
+              :rules="rules.confirmPasswordRules"
               label="Confirm password"
               required
               validate-on-blur

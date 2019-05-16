@@ -8,9 +8,8 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import colors from 'vuetify/es5/util/colors'
 import SignUp from './components/signUpForm/SignUpForm.vue'
+import Login from './components/login/Login.vue'
 
-import Vuelidate from 'vuelidate';
-Vue.use(Vuelidate);
 
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue);
@@ -50,6 +49,10 @@ const routes = [
   {
     path: "/signUp",
     component: SignUp
+  },
+  {
+    path: "/login",
+    component: Login
   }
 ];
 

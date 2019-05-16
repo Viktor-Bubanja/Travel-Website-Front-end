@@ -20,7 +20,10 @@ export default{
       ],
         givenNameRules: [() => !!this.givenName || 'First name is required'],
         familyNameRules: [() => !!this.familyName || 'Last name is required'],
-        usernameRules: [() => !!this.username || 'Username is required']
+        usernameRules: [() => !!this.username || 'Username is required'],
+        passwordRules: [() => !!this.password || 'Password is required'],
+        confirmPasswordRules: [() => !!this.confirmPassword || 'Confirmed password is required',
+          (input) => input === password || 'Passwords do not match, try again']
       },
       baseUrl: "http://localhost:4941/api/v1/"
     }
@@ -43,23 +46,20 @@ export default{
     }
   },
   methods: {
+    onUpdateUsername(username) {
+      this.username = username;
+    },
     validateForm() {
       let formIsValid = true;
       Object.keys(this.form).forEach(f => {
         if (this.$refs[f].validate(true) === false) {
-          formIsValid =  false;
+          formIsValid = false;
         }
       });
       return formIsValid;
     },
     sendForm(form) {
       const url = this.baseUrl + 'users';
-      // return new Promise((resolve, reject) => {
-      //   this.$http.post(url, JSON.stringify(this.form))
-      //     .then((response) => {resolve(response.data)})
-      //     .catch((response) => {reject(response.data)});
-      // });
-
       return this.$http.post(url, JSON.stringify(this.form))
         .then(function (response) {
           return response.data;
