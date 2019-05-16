@@ -1,5 +1,4 @@
 <template>
-
   <div>
     <div v-if = "errorFlag" style = "color: red;">
       {{ error }}
@@ -16,7 +15,6 @@
             v-model="cityKeyword"
             :items="cities"
           ></v-autocomplete>
-
           <div>
             <div class="text-right">
               <b-button v-b-toggle.filters class="button" size="lg">Filters</b-button>
@@ -82,9 +80,40 @@
                 fluid
                 src="https://picsum.photos/250/250/?image=54"
                 alt="Image 1"
+                v-b-toggle.venueDetails
               ></b-img-lazy>
-
+              <b-collapse id="venueDetails" class="mt-2">
+                <b-card no-body>
+                  <b-tabs card>
+                    <b-tab title="Tab 1" active>
+                      Tab Contents 1
+                    </b-tab>
+                    <b-tab title="Tab 2">
+                      Tab Contents 2
+                    </b-tab>
+                  </b-tabs>
+                </b-card>
+              </b-collapse>
             </template>
+
+              <template slot="show_details" slot-scope="row">
+                <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+                  {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
+                </b-button>
+              </template>
+
+              <template slot="row-details" slot-scope="row">
+                <b-card>
+                  <b-tabs card>
+                    <b-tab title="Tab 1" active>
+                      <b-col>{{ row.item.category }}</b-col>
+                    </b-tab>
+                    <b-tab title="Tab 2">
+                      <b-col>{{ row.item.name }}</b-col>
+                    </b-tab>
+                  </b-tabs>
+                </b-card>
+              </template>
           </b-table>
         </v-card>
         </v-flex>
