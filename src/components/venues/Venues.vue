@@ -79,15 +79,16 @@
             :items="this.filteredVenueTableData"
             :per-page="rowsPerPage"
             :current-page="currentPage"
-            :fields="this.fields"
-            @row-clicked="rowClickedHandler">
+            :fields="this.fields">
 
               <template slot="show_details" slot-scope="row">
-                <b-img-lazy
-                  thumbnail
-                  fluid
-                  src="https://picsum.photos/250/250/?image=54"
-                  alt="Image 1"></b-img-lazy>
+                <!--<b-img-lazy-->
+                  <!--thumbnail-->
+                  <!--fluid-->
+                  <!--:src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto"-->
+                  <!--class="thumbnail"-->
+                  <!--&gt;</b-img-lazy>-->
+                <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto" alt="Forest" style="width:150px" onclick="row.toggleDetails">
                 <b-button size="sm" @click="row.toggleDetails" class="mr-2">Details
                 </b-button>
               </template>
@@ -108,47 +109,6 @@
                     </b-tab>
                     <b-tab title="Photos">
                       <div>
-                        <!--<b-carousel-->
-                          <!--id="carousel-1"-->
-                          <!--v-model="slide"-->
-                          <!--:interval="4000"-->
-                          <!--controls-->
-                          <!--indicators-->
-                          <!--background="#ababab"-->
-                          <!--img-width="1024"-->
-                          <!--img-height="480"-->
-                          <!--style="text-shadow: 1px 1px 2px #333;"-->
-                          <!--@sliding-start="onSlideStart"-->
-                          <!--@sliding-end="onSlideEnd"-->
-                        <!--&gt;-->
-                          <!--<b-carousel-slide-->
-                            <!--img-src="https://picsum.photos/1024/480/?image=52"-->
-                          <!--&gt;</b-carousel-slide>-->
-
-                          <!--<b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54">-->
-                          <!--</b-carousel-slide>-->
-
-                          <!--<b-carousel-slide img-src="https://picsum.photos/1024/480/?image=58"></b-carousel-slide>-->
-
-                          <!--<b-carousel-slide>-->
-                            <!--<img-->
-                              <!--src="https://picsum.photos/1024/480/?image=55"-->
-                            <!--&gt;-->
-                          <!--</b-carousel-slide>-->
-
-                          <!--<b-carousel-slide caption="Blank Image" img-blank img-alt="Blank image">-->
-                            <!--<p>-->
-                              <!--Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eros felis, tincidunt-->
-                              <!--a tincidunt eget, convallis vel est. Ut pellentesque ut lacus vel interdum.-->
-                            <!--</p>-->
-                          <!--</b-carousel-slide>-->
-                        <!--</b-carousel>-->
-
-                        <!--<p class="mt-4">-->
-                          <!--Slide #: {{ slide }}<br>-->
-                          <!--Sliding: {{ sliding }}-->
-                        <!--</p>-->
-
                         <b-carousel
                           controls
                           indicators
@@ -160,16 +120,11 @@
                           @sliding-end="2"
                         >
                         <div class="carousel-item" v-for="(photo,idx) in row.item.photos" :class="{ active: idx==0 }">
-                          <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + photo.photoFilename" alt="" class="img-fluid">
+                          <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + photo.photoFilename" class="img-fluid">
                         </div>
                         </b-carousel>
                       </div>
-
                     </b-tab>
-
-
-
-
                     <b-tab title="Reviews">
                     </b-tab>
                   </b-tabs>
@@ -210,6 +165,15 @@
   .button {
     background-color: white;
     color: black;
+  }
+  thumbnail {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+    width: 150px;
+  }
+  img:hover {
+    box-shadow: 0 0 2px 1px rgba(0, 140, 186, 0.5);
   }
 </style>
 

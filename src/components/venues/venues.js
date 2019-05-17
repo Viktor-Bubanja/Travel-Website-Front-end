@@ -44,12 +44,8 @@ export default {
       selectedRow: ""
     }
   },
-  mounted() {
-    $('.carousel').carousel();
-  },
   computed: {
   photosTwo() {
-    console.log("DFGSDFG");
     let photos = ['<div class="example-slide">Slide 1</div>',
     '<div class="example-slide">Slide 2</div>',
     '<div class="example-slide">Slide 3</div>'];
@@ -104,9 +100,6 @@ export default {
         );
       this.getCategories();
     },
-    rowClickedHandler: function(one, two, three) {
-      console.log(one);
-    },
     getVenues: function () {
       let url = this.baseUrl + "venues";
       url += "/?sortBy=STAR_RATING";
@@ -119,20 +112,12 @@ export default {
           this.errorFlag = true;
         });
     },
-    getVenuePhoto: function (venueId, data) {
-      var photoName = "";
-
-      var photos = data.photos;
-      for (var i = 0; i < photos.length; i++) {
-        if (photos[i].isPrimary == true) {
-          photoName = photos[i].photoFilename;
-          this.$http.get(this.baseUrl + "venues/" + venueId + '/photos/' + photoName)
-            .then(function (response) {
-              return response;
-            })
+    getPrimaryPhoto(photos) {
+      for (let i = 0; i < photos.length; i++) {
+        if (photos[i].isPrimary === true) {
+          return photos[i].photoFilename;
         }
       }
-      return "photo";
     },
     generateTable: function (venues) {
       this.unfilteredVenueTableData = [];
@@ -148,7 +133,6 @@ export default {
             this.error = error;
             this.errorFlag = true;
           }).then(function(data) {
-          // venueData.photo = this.getVenuePhoto(venue.venueId, data);
           venueData.name = data.venueName;
           venueData.city = data.city;
           venueData.category = data.category.categoryName;
@@ -156,15 +140,16 @@ export default {
           venueData.longDescription = data.longDescription;
           venueData.admin = data.admin.username;
           venueData.photos = data.photos;
+          venueData.primaryPhoto = this.getPrimaryPhoto(data.photos);
           venueData.starRating = venue.meanStarRating;
           venueData.costRating = venue.modeCostRating;
           venueData.venueId = venue.venueId;
-
 
           this.unfilteredVenueTableData.push(venueData);
         });
       }
     },
+
     getCategories() {
       this.$http.get(this.baseUrl + 'categories')
         .then(function (response) {
@@ -174,24 +159,6 @@ export default {
           this.error = error;
           this.errorFlag = true;
         });
-    },
-    getVenuePhotos(venueId, photoData) {
-        let photos = [];
-        console.log("here");
-        console.log("venueId: " + venueId);
-        console.log("photoData: " + photoData);
-        for (let i = 0; i < photoData.length; i++) {
-          let url = this.baseUrl + 'venues/' + venueId + '/photos/' + photoData[i].photoFilename;
-          console.log(url);
-          this.$http.get(url)
-            .then(function (response) {
-              photos.push(response.data);
-            }, function (error) {
-              this.error = error;
-              this.errorFlag = true;
-            })
-        }
-        return photos;
     }
   }
 }
