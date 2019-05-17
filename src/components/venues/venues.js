@@ -1,3 +1,4 @@
+
 export default {
   data() {
     return {
@@ -40,12 +41,24 @@ export default {
       sliderTickValues: ['0', '1', '2', '3', '4', '5'],
       currentPage: 1,
       rowsPerPage: 10,
-      selectedRow: ""
+      selectedRow: "",
+      photos: [
+        '<div class="example-slide">Slide 1</div>',
+        '<div class="example-slide">Slide 2</div>',
+        '<div class="example-slide">Slide 3</div>'
+      ]
     }
   },
   computed: {
+  photosTwo() {
+    console.log("DFGSDFG");
+    let photos = ['<div class="example-slide">Slide 1</div>',
+    '<div class="example-slide">Slide 2</div>',
+    '<div class="example-slide">Slide 3</div>'];
+    return photos;
+  },
     numberRows() {
-      return this.venues.length;
+      return this.filteredVenueTableData.length;
     },
     cities() {
       let cities = this.venues.map(a => a.city);
@@ -85,8 +98,8 @@ export default {
         );
       this.getCategories();
     },
-    rowClickedHandler: function() {
-      console.log("DFGHDGFH");
+    rowClickedHandler: function(one, two, three) {
+      console.log(one);
     },
     getVenues: function () {
       let url = this.baseUrl + "venues";
@@ -133,8 +146,15 @@ export default {
           venueData.name = data.venueName;
           venueData.city = data.city;
           venueData.category = data.category.categoryName;
+          venueData.shortDescription = data.shortDescription;
+          venueData.longDescription = data.longDescription;
+          venueData.admin = data.admin.username;
+          venueData.photos = data.photos;
           venueData.starRating = venue.meanStarRating;
           venueData.costRating = venue.modeCostRating;
+          venueData.venueId = venue.venueId;
+
+
           this.unfilteredVenueTableData.push(venueData);
         });
       }
@@ -148,6 +168,24 @@ export default {
           this.error = error;
           this.errorFlag = true;
         });
+    },
+    getVenuePhotos(venueId, photoData) {
+        let photos = [];
+        console.log("here");
+        console.log("venueId: " + venueId);
+        console.log("photoData: " + photoData);
+        for (let i = 0; i < photoData.length; i++) {
+          let url = this.baseUrl + 'venues/' + venueId + '/photos/' + photoData[i].photoFilename;
+          console.log(url);
+          this.$http.get(url)
+            .then(function (response) {
+              photos.push(response.data);
+            }, function (error) {
+              this.error = error;
+              this.errorFlag = true;
+            })
+        }
+        return photos;
     }
   }
 }

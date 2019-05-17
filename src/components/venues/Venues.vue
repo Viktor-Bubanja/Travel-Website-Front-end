@@ -11,6 +11,7 @@
           <v-card-title class="headline font-weight-regular blue-grey white--text">Venues</v-card-title>
           <v-subheader class="pa-0">Choose a city to explore</v-subheader>
 
+
           <v-autocomplete
             v-model="cityKeyword"
             :items="cities"
@@ -24,7 +25,7 @@
                 <b-form-group>
                   <b-input-group>
                     <b-form-input v-model="nameKeyword"
-                                  placeholder="Search"
+                                  placeholder="Search by name"
                                   size="lg"
                                   type="text"
                                   class="col-xs-2"
@@ -42,6 +43,15 @@
                   ></v-select>
                 </v-flex>
 
+                <div id="module" class="container">
+                  <p>sdfsdfsdfsd</p>
+                  <p class="collapse" id="collapseExample" aria-expanded="false">
+                    dfsdfsdfsdsdfsdf
+                  </p>
+                  <a role="button" class="collapsed" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                  </a>
+                </div>
+
                 <v-slider
                   v-model="starRatingSliderValue"
                   :max="5"
@@ -57,15 +67,12 @@
               </b-card>
             </b-collapse>
           </div>
-
-
           <b-pagination
             v-model="currentPage"
             :total-rows="numberRows"
             :per-page="rowsPerPage"
             aria-controls="venue-table"
           ></b-pagination>
-
           <b-table
             id="venue-table"
             hover
@@ -74,42 +81,72 @@
             :current-page="currentPage"
             :fields="this.fields"
             @row-clicked="rowClickedHandler">
-            <template slot="show_details" slot-scope="row">
-              <b-img-lazy
-                thumbnail
-                fluid
-                src="https://picsum.photos/250/250/?image=54"
-                alt="Image 1"
-                v-b-toggle.venueDetails
-              ></b-img-lazy>
-              <b-collapse id="venueDetails" class="mt-2">
-                <b-card no-body>
-                  <b-tabs card>
-                    <b-tab title="Tab 1" active>
-                      Tab Contents 1
-                    </b-tab>
-                    <b-tab title="Tab 2">
-                      Tab Contents 2
-                    </b-tab>
-                  </b-tabs>
-                </b-card>
-              </b-collapse>
-            </template>
 
               <template slot="show_details" slot-scope="row">
-                <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-                  {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
+                <b-img-lazy
+                  thumbnail
+                  fluid
+                  src="https://picsum.photos/250/250/?image=54"
+                  alt="Image 1"></b-img-lazy>
+                <b-button size="sm" @click="row.toggleDetails" class="mr-2">Details
                 </b-button>
               </template>
 
               <template slot="row-details" slot-scope="row">
                 <b-card>
                   <b-tabs card>
-                    <b-tab title="Tab 1" active>
-                      <b-col>{{ row.item.category }}</b-col>
+                    <b-tab title="Info" active>
+                      <b-card>
+                        <h4>About {{ row.item.name }}</h4>
+
+                        <div align="right">
+                          <p>Category: {{ row.item.category}}</p>
+                          <p>Admin: {{ row.item.admin}}</p>
+                        </div>
+                      </b-card>
+
                     </b-tab>
-                    <b-tab title="Tab 2">
-                      <b-col>{{ row.item.name }}</b-col>
+                    <b-tab title="Photos">
+                        <p>Photos</p>
+                      <b-carousel
+                        id="carousel-1"
+                        v-model="slide"
+                        :interval="4000"
+                        controls
+                        indicators
+                        background="#ababab"
+                        img-width="1024"
+                        img-height="480"
+                        style="text-shadow: 1px 1px 2px #333;"
+                        @sliding-start="onSlideStart"
+                        @sliding-end="onSlideEnd"
+                      >
+                        <b-carousel-slide
+                          caption="First slide"
+                          text="Nulla vitae elit libero, a pharetra augue mollis interdum."
+                          img-src="https://picsum.photos/1024/480/?image=52"
+                        ></b-carousel-slide>
+
+                        <b-carousel-slide img-src="https://picsum.photos/1024/480/?image=54">
+                          <h1>Hello world!</h1>
+                        </b-carousel-slide>
+
+                        <b-carousel-slide img-src="https://localhost:4941/api/v1/venues/4/photos/"></b-carousel-slide>
+
+                        <b-carousel-slide>
+                          <img
+                            slot="img"
+                            class="d-block img-fluid w-100"
+                            width="1024"
+                            height="480"
+                            src="https://picsum.photos/1024/480/?image=55"
+                            alt="image slot"
+                          >
+                        </b-carousel-slide>
+
+                      </b-carousel>
+                    </b-tab>
+                    <b-tab title="Reviews">
                     </b-tab>
                   </b-tabs>
                 </b-card>
@@ -133,10 +170,32 @@
     padding: 20px;
     background: snow;
   }
+  #module {
+    width: 500px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  #module a.collapsed:after  {
+    content: '+ Show More';
+  }
+
+  #module a:not(.collapsed):after {
+    content: '- Show Less';
+  }
   .button {
     background-color: white;
     color: black;
   }
+   .example-slide {
+     align-items: center;
+     background-color: #666;
+     color: #999;
+     display: flex;
+     font-size: 1.5rem;
+     justify-content: center;
+     min-height: 10rem;
+   }
 </style>
 
 
