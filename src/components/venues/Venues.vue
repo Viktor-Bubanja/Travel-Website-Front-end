@@ -150,23 +150,20 @@
                         <!--</p>-->
 
                         <b-carousel
-                          v-model="slide"
                           controls
                           indicators
                           background="#ababab"
                           img-width="1024"
                           img-height="480"
                           style="text-shadow: 1px 1px 2px #333;"
-                          @sliding-start="onSlideStart"
-                          @sliding-end="onSlideEnd">
-                        <div class="carousel-item" v-for="(photo,idx) in photos" :class="{ active: idx==0 }">
-                          <img :src="photo" alt="" class="img-fluid">
+                          @sliding-start="0"
+                          @sliding-end="2"
+                        >
+                        <div class="carousel-item" v-for="(photo,idx) in row.item.photos" :class="{ active: idx==0 }">
+                          <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + photo.photoFilename" alt="" class="img-fluid">
                         </div>
                         </b-carousel>
                       </div>
-
-
-
 
                     </b-tab>
 
@@ -214,15 +211,6 @@
     background-color: white;
     color: black;
   }
-   .example-slide {
-     align-items: center;
-     background-color: #666;
-     color: #999;
-     display: flex;
-     font-size: 1.5rem;
-     justify-content: center;
-     min-height: 10rem;
-   }
 </style>
 
 
