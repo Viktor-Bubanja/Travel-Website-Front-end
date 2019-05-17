@@ -41,13 +41,11 @@ export default {
       sliderTickValues: ['0', '1', '2', '3', '4', '5'],
       currentPage: 1,
       rowsPerPage: 10,
-      selectedRow: "",
-      photos: [
-        '<div class="example-slide">Slide 1</div>',
-        '<div class="example-slide">Slide 2</div>',
-        '<div class="example-slide">Slide 3</div>'
-      ]
+      selectedRow: ""
     }
+  },
+  mounted() {
+    $('.carousel').carousel();
   },
   computed: {
   photosTwo() {
@@ -84,7 +82,15 @@ export default {
       filteredData = filteredData.filter(item => item.costRating <= this.costRatingSliderValue);
 
       return filteredData;
+    },
+    photos() {
+      let photoLinks = ["https://picsum.photos/1024/480/?image=52",
+      "https://picsum.photos/1024/480/?image=54",
+      "https://picsum.photos/1024/480/?image=55"];
+      return photoLinks;
+
     }
+
   },
   created() {
     this.initialise()
