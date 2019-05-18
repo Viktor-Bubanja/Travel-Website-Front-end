@@ -11,17 +11,11 @@ export default{
       confirmPassword: "",
       formHasErrors: "",
       rules: {
-        emailRules: [
-          (v) => !!v || 'Name is required',
-          (v) => /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(v)
-            || 'E-mail must be valid'
-        ],
         givenNameRules: [() => !!this.givenName || 'First name is required'],
         familyNameRules: [() => !!this.familyName || 'Last name is required'],
-        usernameRules: [() => !!this.username || 'Username is required'],
         passwordRules: [() => !!this.password || 'Password is required'],
         confirmPasswordRules: [() => !!this.confirmPassword || 'Confirmed password is required',
-          (input) => input === password || 'Passwords do not match, try again']
+          (input) => input === this.password || 'Passwords do not match, try again']
       },
       baseUrl: "http://localhost:4941/api/v1/"
     }
@@ -57,8 +51,9 @@ export default{
       return formIsValid;
     },
     sendForm(form) {
-      const url = this.baseUrl + 'users';
-      return this.$http.post(url, JSON.stringify(this.form))
+      let userId = 1;
+      const url = this.baseUrl + '/users/' + userId;
+      return this.$http.patch(url, JSON.stringify(this.form))
         .then(function (response) {
           return response.data;
         }, function (response) {
@@ -73,7 +68,6 @@ export default{
         this.sendForm(this.form)
           .then((responseData) => {
             console.log(responseData);
-            this.$router.push("/venues")
           });
 
       }

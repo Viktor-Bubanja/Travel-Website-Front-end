@@ -88,7 +88,7 @@
                   <!--:src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto"-->
                   <!--class="thumbnail"-->
                   <!--&gt;</b-img-lazy>-->
-                <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto" alt="Forest" style="width:150px" onclick="row.toggleDetails">
+                <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto" alt="Forest" 2 onclick="row.toggleDetails">
                 <b-button size="sm" @click="row.toggleDetails" class="mr-2">Details
                 </b-button>
               </template>
