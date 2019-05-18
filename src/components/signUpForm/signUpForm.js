@@ -23,7 +23,7 @@ export default{
         usernameRules: [() => !!this.username || 'Username is required'],
         passwordRules: [() => !!this.password || 'Password is required'],
         confirmPasswordRules: [() => !!this.confirmPassword || 'Confirmed password is required',
-          (input) => input === password || 'Passwords do not match, try again']
+          (input) => input === this.password || 'Passwords do not match, try again']
       },
       baseUrl: "http://localhost:4941/api/v1/"
     }
@@ -60,24 +60,20 @@ export default{
     },
     sendForm(form) {
       const url = this.baseUrl + 'users';
+      console.log(this.form);
       return this.$http.post(url, JSON.stringify(this.form))
-        .then(function (response) {
-          return response.data;
-        }, function (response) {
-          return response.data;
-        });
     },
     submit () {
       this.formHasErrors = !this.validateForm();
       if (this.formHasErrors === false) {
         delete this.form.confirmPassword;
-        console.log(this.sendForm(this.form));
         this.sendForm(this.form)
-          .then((responseData) => {
-            console.log(responseData);
+          .then(function (response) {
             this.$router.push("/venues")
+          }, function (response) {
+            this.errorMessages = response;
+            console.log("error");
           });
-
       }
     }
   }

@@ -42,24 +42,31 @@ export default{
       return formIsValid;
     },
     sendForm(form) {
-      const url = this.baseUrl + 'users';
-      return this.$http.post(url, JSON.stringify(this.form))
-        .then(function (response) {
-          return response.data;
-        }, function (response) {
-          return response.data;
-        });
+      const url = this.baseUrl + 'users/login';
+      const loginData = {};
+      if (this.form.usernameOrEmail.includes("@")) {
+        loginData.email = this.form.usernameOrEmail;
+      } else {
+        loginData.username = this.form.usernameOrEmail;
+      }
+      loginData.password = this.form.password;
+      return this.$http.post(url, JSON.stringify(loginData));
     },
     submit () {
       this.formHasErrors = !this.validateForm();
       if (this.formHasErrors === false) {
         console.log(this.sendForm(this.form));
         this.sendForm(this.form)
-          .then((responseData) => {
-            console.log(responseData);
-            this.$router.push("/venues")
+          .then(function (response) {
+            console.log(response);
+            console.log(localStorage);
+            localStorage.setItem("auth", response.body.token);
+            localStorage.setItem("loggedInUserId", response.body.userId);
+            this.$router.push("/venues");
+          }, function (response) {
+            console.log("error");
+            console.log(response);
           });
-
       }
     }
   }
