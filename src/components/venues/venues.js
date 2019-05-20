@@ -38,19 +38,14 @@ export default {
       categories: [],
       starRatingSliderValue: 0,
       costRatingSliderValue: 5,
-      sliderTickValues: ['0', '1', '2', '3', '4', '5'],
+      starSliderTickValues: ['1', '2', '3', '4', '5'],
+      costSliderTickValues: ['Free', '$', '$$', '$$$', '$$$$'],
       currentPage: 1,
       rowsPerPage: 10,
       selectedRow: ""
     }
   },
   computed: {
-  photosTwo() {
-    let photos = ['<div class="example-slide">Slide 1</div>',
-    '<div class="example-slide">Slide 2</div>',
-    '<div class="example-slide">Slide 3</div>'];
-    return photos;
-  },
     numberRows() {
       return this.filteredVenueTableData.length;
     },
@@ -61,32 +56,19 @@ export default {
     },
     filteredVenueTableData() {
       let filteredData = this.unfilteredVenueTableData;
-
       if (this.nameKeyword) {
         filteredData = filteredData.filter(item => item.name.toLowerCase().includes(this.nameKeyword.toLowerCase()));
       }
-
       if (this.categoryKeyword) {
         filteredData = filteredData.filter(item => item.category.toLowerCase() === this.categoryKeyword.toLowerCase());
       }
-
       if (this.cityKeyword) {
         filteredData = filteredData.filter(item => item.city.toLowerCase() === this.cityKeyword.toLowerCase());
       }
-
       filteredData = filteredData.filter(item => item.starRating >= this.starRatingSliderValue);
       filteredData = filteredData.filter(item => item.costRating <= this.costRatingSliderValue);
-
       return filteredData;
-    },
-    photos() {
-      let photoLinks = ["https://picsum.photos/1024/480/?image=52",
-      "https://picsum.photos/1024/480/?image=54",
-      "https://picsum.photos/1024/480/?image=55"];
-      return photoLinks;
-
     }
-
   },
   created() {
     this.initialise()
@@ -119,9 +101,12 @@ export default {
         }
       }
     },
+    getReviews(venueId) {
+
+      return this.$http.get(this.baseUrl + 'venues/' + venueId + '/reviews');
+    },
     generateTable: function (venues) {
-      this.unfilteredVenueTableData = [];
-      for (var i = 0; i < venues.length; i++) {
+      for (let i = 0; i < venues.length; i++) {
         let url = this.baseUrl + "venues/" + venues[i].venueId;
         let venueData = {};
         let venue = venues[i];
@@ -133,27 +118,29 @@ export default {
             this.error = error;
             this.errorFlag = true;
           }).then(function(data) {
-          venueData.name = data.venueName;
-          venueData.city = data.city;
-          venueData.category = data.category.categoryName;
-          venueData.shortDescription = data.shortDescription;
-          venueData.longDescription = data.longDescription;
-          venueData.admin = data.admin.username;
-          venueData.photos = data.photos;
-          venueData.primaryPhoto = this.getPrimaryPhoto(data.photos);
-          venueData.starRating = venue.meanStarRating;
-          venueData.costRating = venue.modeCostRating;
+          venueData = data;
+          venueData.starRating = venue.meanStarRating !== null ? venue.meanStarRating : 3;
+          venueData.costRating = venue.modeCostRating !== null ? venue.modeCostRating : 0;
           venueData.venueId = venue.venueId;
+          this.getReviews(venue.venueId)
+            .then(function(response) {
+              console.log(response.body.timePosted);
+              console.log(response.body.timePosted.toISOString());
+              venueData.reviews = response.body;
+          }, function(error) {
+              this.error = error;
+              this.errorFlag = true;
+            });
 
           this.unfilteredVenueTableData.push(venueData);
         });
       }
     },
-
     getCategories() {
       this.$http.get(this.baseUrl + 'categories')
         .then(function (response) {
-          this.categories = response.data.map(a => a.categoryName);
+
+          this.categories = response.data.map(a => a.category.categoryName);
           this.categories.unshift("");
         }, function (error) {
           this.error = error;

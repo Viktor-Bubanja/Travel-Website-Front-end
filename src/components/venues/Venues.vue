@@ -10,8 +10,6 @@
         <v-card id="venues">
           <v-card-title class="headline font-weight-regular blue-grey white--text">Venues</v-card-title>
           <v-subheader class="pa-0">Choose a city to explore</v-subheader>
-
-
           <v-autocomplete
             v-model="cityKeyword"
             :items="cities"
@@ -42,26 +40,20 @@
                     label="Category"
                   ></v-select>
                 </v-flex>
-
-                <div id="module" class="container">
-                  <p>sdfsdfsdfsd</p>
-                  <p class="collapse" id="collapseExample" aria-expanded="false">
-                    dfsdfsdfsdsdfsdf
-                  </p>
-                  <a role="button" class="collapsed" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                  </a>
-                </div>
-
+                <v-subheader class="pl-0">Minimum star rating</v-subheader>
                 <v-slider
                   v-model="starRatingSliderValue"
+                  :min="1"
                   :max="5"
-                  :tick-labels="sliderTickValues"
+                  :tick-labels="starSliderTickValues"
                 ></v-slider>
 
+                <v-subheader class="pl-0">Maximum cost rating</v-subheader>
                 <v-slider
                   v-model="costRatingSliderValue"
-                  :max="5"
-                  :tick-labels="sliderTickValues"
+                  :min="0"
+                  :max="4"
+                  :tick-labels="costSliderTickValues"
                 ></v-slider>
 
               </b-card>
@@ -82,13 +74,7 @@
             :fields="this.fields">
 
               <template slot="show_details" slot-scope="row">
-                <!--<b-img-lazy-->
-                  <!--thumbnail-->
-                  <!--fluid-->
-                  <!--:src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto"-->
-                  <!--class="thumbnail"-->
-                  <!--&gt;</b-img-lazy>-->
-                <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto" alt="Forest" 2 onclick="row.toggleDetails">
+<!--                <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + row.item.primaryPhoto" alt="Forest" 2 onclick="row.toggleDetails">-->
                 <b-button size="sm" @click="row.toggleDetails" class="mr-2">Details
                 </b-button>
               </template>
@@ -119,13 +105,25 @@
                           @sliding-start="0"
                           @sliding-end="2"
                         >
-                        <div class="carousel-item" v-for="(photo,idx) in row.item.photos" :class="{ active: idx==0 }">
-                          <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + photo.photoFilename" class="img-fluid">
-                        </div>
+<!--                        <div class="carousel-item" v-for="(photo,idx) in row.item.photos" :class="{ active: idx==0 }">-->
+<!--                          <img :src="baseUrl + 'venues/' + row.item.venueId + '/photos/' + photo.photoFilename" class="img-fluid">-->
+<!--                        </div>-->
                         </b-carousel>
                       </div>
                     </b-tab>
                     <b-tab title="Reviews">
+                      <ul>
+                        <li v-for="review in row.item.reviews">
+                          <v-card>
+                            <p>{{review}}</p>
+                            <p>{{review.reviewBody}}</p>
+                            <p>Star rating: {{ review.starRating }}</p>
+                            <p>Cost rating: {{ review.costRating }}</p>
+                            <p>Author: {{ review.reviewAuthor.username }}</p>
+                            <p></p>
+                          </v-card>
+                        </li>
+                      </ul>
                     </b-tab>
                   </b-tabs>
                 </b-card>
