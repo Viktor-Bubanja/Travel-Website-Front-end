@@ -12,18 +12,23 @@ export default{
       password: "",
       confirmPassword: "",
       formHasErrors: "",
+      usernameEmailUnique: true,
       rules: {
         emailRules: [
-        (v) => !!v || 'Name is required',
-        (v) => /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(v)
+        (input) => !!input || 'Email is required',
+        (input) => /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(input)
           || 'E-mail must be valid'
       ],
-        givenNameRules: [() => !!this.givenName || 'First name is required'],
-        familyNameRules: [() => !!this.familyName || 'Last name is required'],
-        usernameRules: [() => !!this.username || 'Username is required'],
-        passwordRules: [() => !!this.password || 'Password is required'],
-        confirmPasswordRules: [() => !!this.confirmPassword || 'Confirmed password is required',
-          (input) => input === this.password || 'Passwords do not match, try again']
+        givenNameRules: [(input) => !!input || 'First name is required'],
+        familyNameRules: [(input) => !!input || 'Last name is required'],
+        usernameRules: [(input) => !!input || 'Username is required',
+          (input) => input.length <= 64 || 'Username cannot be more than 64 characters long',
+          (input) => /^[a-z0-9]+$/i.test(input) || 'Username can consist of only letters and numbers'],
+        passwordRules: [(input) => !!input || 'Password is required'],
+        confirmPasswordRules: [(input) => !!input || 'Confirmed password is required',
+          (input) => input === this.password || 'Passwords do not match, try again'],
+        error: "",
+        errorFlag: false,
       },
       baseUrl: "http://localhost:4941/api/v1/"
     }
@@ -50,8 +55,11 @@ export default{
       this.username = username;
     },
     validateForm() {
+      console.log("HERE");
       let formIsValid = true;
       Object.keys(this.form).forEach(f => {
+        console.log(f);
+        console.log(this.$refs[f].validate(true));
         if (this.$refs[f].validate(true) === false) {
           formIsValid = false;
         }
@@ -60,19 +68,26 @@ export default{
     },
     sendForm(form) {
       const url = this.baseUrl + 'users';
-      console.log(this.form);
       return this.$http.post(url, JSON.stringify(this.form))
     },
     submit () {
+      this.errorMessages = '';
       this.formHasErrors = !this.validateForm();
       if (this.formHasErrors === false) {
         delete this.form.confirmPassword;
         this.sendForm(this.form)
           .then(function (response) {
+            console.log(response);
+            console.log("here");
+            localStorage.setItem("auth", response.body.token);
+            localStorage.setItem("loggedInUserId", response.body.userId);
+            localStorage.setItem("password", this.password);
             this.$router.push("/venues")
-          }, function (response) {
-            this.errorMessages = response;
+          }, function (error) {
+            console.log("here2");
             console.log("error");
+            this.errorMessages = "Email or username already in use";
+            this.usernameEmailUnique = false;
           });
       }
     }

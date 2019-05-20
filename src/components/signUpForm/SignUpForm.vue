@@ -9,7 +9,6 @@
               ref="givenName"
               v-model="givenName"
               :rules="rules.givenNameRules"
-              :error-messages="errorMessages"
               label="First Name"
               required
             ></v-text-field>
@@ -17,7 +16,6 @@
               ref="familyName"
               v-model="familyName"
               :rules="rules.familyNameRules"
-              :error-messages="errorMessages"
               label="Last Name"
               required
             ></v-text-field>
@@ -25,6 +23,7 @@
               ref="username"
               v-model="username"
               :rules="rules.usernameRules"
+              :error-messages="errorMessages"
               label="Username"
               required
             ></v-text-field>
@@ -32,6 +31,7 @@
               ref="email"
               v-model="email"
               :rules="rules.emailRules"
+              :error-messages="errorMessages"
               label="Email"
               required
               validate-on-blur
