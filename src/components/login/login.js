@@ -62,9 +62,11 @@ export default{
             console.log(localStorage);
             localStorage.setItem("auth", response.body.token);
             localStorage.setItem("loggedInUserId", response.body.userId);
+            localStorage.setItem("password", this.password);
             this.$router.push("/venues");
           }, function (response) {
             console.log("error");
+            this.errorMessages = 'Username/email or password is incorrect. Please try again.';
             console.log(response);
           });
       }

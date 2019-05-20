@@ -9,6 +9,7 @@
                 ref="usernameOrEmail"
                 v-model="usernameOrEmail"
                 :rules="rules.usernameEmailRules"
+                :error-messages="errorMessages"
                 label="Username or Email"
                 required
                 validate-on-blur
@@ -18,6 +19,7 @@
                 ref="password"
                 v-model="password"
                 :rules="rules.passwordRules"
+                :error-messages="errorMessages"
                 label="Password"
                 required
               ></v-text-field>
