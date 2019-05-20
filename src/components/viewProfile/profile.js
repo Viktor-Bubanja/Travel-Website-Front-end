@@ -2,11 +2,13 @@ import EditProfile from '../editProfile/EditProfile.vue'
 export default {
   data() {
     return {
-      publicUserInfo: {
+      userInfo: {
         givenName: "",
         familyName: "",
-        username: ""
+        username: "",
+        email: ""
       },
+      password: localStorage.getItem("password"),
       showModal: false,
       baseUrl: "http://localhost:4941/api/v1/"
     }
@@ -21,9 +23,11 @@ export default {
   },
   methods: {
     getUser() {
-      this.$http.get(this.baseUrl + 'users/' + this.$route.params.userId)
+      console.log("get user called");
+      const headers = {headers: {'X-Authorization': localStorage.getItem("auth")}};
+      this.$http.get(this.baseUrl + 'users/' + this.$route.params.userId, headers)
         .then(function(response) {
-          this.publicUserInfo = response.data;
+          this.userInfo = response.body;
         }, function(error) {
           console.log(error);
         })
