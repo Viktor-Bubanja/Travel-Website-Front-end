@@ -1,8 +1,8 @@
 <template>
 <v-app>
   <v-layout justify-center>
-    <b-card ref="form">
-      <b-tabs  pills card vertical>
+    <b-card>
+      <b-tabs pills card vertical>
         <b-tab title="Profile" active>
           <v-card-text>
             <v-text-field
@@ -22,39 +22,34 @@
               required
             ></v-text-field>
           </v-card-text>
-          <v-divider class="mt-5"></v-divider>
           <v-card-actions>
-            <v-btn flat>Cancel</v-btn>
-            <v-spacer></v-spacer>
-            <v-slide-x-reverse-transition>
-              <v-tooltip
-                v-if="formHasErrors"
-                left
-              >
-                <span>Refresh form</span>
-              </v-tooltip>
-            </v-slide-x-reverse-transition>
-            <v-btn color="primary" flat @click="submit">Submit</v-btn>
+            <v-btn color="primary" flat @click="submitProfileForm">Submit</v-btn>
           </v-card-actions>
         </b-tab>
-        <b-tab  title="Password">
-          <v-text-field
-            type="password"
-            ref="password"
-            v-model="password"
-            :rules="rules.passwordRules"
-            label="Password"
-            required
-          ></v-text-field>
-          <v-text-field
-            type="password"
-            ref="confirmPassword"
-            v-model="confirmPassword"
-            :rules="rules.confirmPasswordRules"
-            label="Confirm password"
-            required
-            validate-on-blur
-          ></v-text-field>
+        <b-tab title="Password">
+          <v-card-text>
+            <v-text-field
+              ref="currentPassword"
+              type="password"
+              v-model="currentPassword"
+              :rules="rules.currentPasswordRules"
+              label="Current Password"
+              required
+              validate-on-blur
+            ></v-text-field>
+            <v-text-field
+              ref="password"
+              type="password"
+              v-model="password"
+              :rules="rules.passwordRules"
+              label="New Password"
+              validate-on-blur
+              required
+            ></v-text-field>
+            <v-card-actions>
+              <v-btn color="primary" flat @click="submitPasswordForm">Submit</v-btn>
+            </v-card-actions>
+          </v-card-text>
         </b-tab>
       </b-tabs>
     </b-card>
