@@ -23,6 +23,10 @@ export default {
         longitudeRules: [(input) => !!input || 'Longitude is required',
           (input) => /^\d+$/.test(input) || 'Longitude must be a number']
       },
+      alerts: {
+        success: false,
+        error: false
+      },
       error: "",
       errorFlag: false,
       baseUrl: "http://localhost:4941/api/v1/"
@@ -78,11 +82,9 @@ export default {
       if (this.formHasErrors === false) {
         this.sendForm(this.form)
           .then(function (response) {
-            console.log(response);
+            this.alerts.success = true;
           }, function (error) {
-            console.log(error);
-            this.errorMessages = "Email or username already in use";
-            this.usernameEmailUnique = false;
+            this.alerts.error = true;
           });
       }
     }

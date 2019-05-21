@@ -72,6 +72,14 @@
           <v-btn color="primary" flat @click="submit">Submit</v-btn>
         </v-card-actions>
         </div>
+        <div>
+        <v-alert
+          :value="alerts.success"
+          type="success"
+          dismissible
+        >Venue created successfully
+        </v-alert>
+        </div>
       </v-flex>
     </v-layout>
   </v-app>
