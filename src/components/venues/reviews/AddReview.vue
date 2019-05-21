@@ -26,7 +26,6 @@
           label="Cost rating"
           :rules="nonEmptyRule"
         ></v-select>
-
       <v-card-actions>
         <v-btn color="primary" flat @click="submit">Submit</v-btn>
       </v-card-actions>

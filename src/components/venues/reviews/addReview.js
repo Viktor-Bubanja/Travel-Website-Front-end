@@ -27,6 +27,9 @@ export default {
       baseUrl: "http://localhost:4941/api/v1/"
     }
   },
+  mounted() {
+    console.log("DSFGSDF");
+  },
   computed: {
     form () {
       return {
@@ -59,6 +62,7 @@ export default {
         this.sendForm(this.form)
           .then(function (response) {
             console.log(response);
+            this.$emit('review-submitted');
           }, function (error) {
             console.log(error);
             if (error.statusText.includes("cannot post more than one review for the same venue")) {
