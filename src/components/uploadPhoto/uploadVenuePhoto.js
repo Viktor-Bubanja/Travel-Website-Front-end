@@ -1,15 +1,26 @@
 export default {
   data(){
     return {
-      form: {
-        photo: "",
-        description: "",
-        isPrimary: ""
-      },
-      nonEmptyRule: [(input) => !!input || "Field can't be empty"],
+      photo: "",
+      description: "",
+      isPrimary: false,
+      descriptionRule: [(input) => !!input || "Description can't be empty"],
       errorMessages: "",
       formHasErrors: "",
+      alerts: {
+        success: false,
+        error: false
+      },
       baseUrl: "http://localhost:4941/api/v1/",
+    }
+  },
+  computed: {
+    form() {
+      return {
+        photo: this.photo,
+        description: this.description,
+        isPrimary: this.isPrimary
+      }
     }
   },
   methods: {
@@ -18,37 +29,54 @@ export default {
     },
     sendForm() {
       let formData = new FormData();
-      formData.append('photo', this.photo);
-      formData.append('makePrimary', "true");
-      formData.append('description', "testing");
+      formData.append('photo', this.form.photo);
+      formData.append('makePrimary', this.form.isPrimary);
+      formData.append('description', this.form.description);
       const headers = {headers: {
           'Content-Type': 'multipart/form-data',
-          'X-Authorization': localStorage.getItem("auth")}};
-      const venueId = 25;//todo change
-      const url = this.baseUrl + 'venues/' + venueId + '/photos';
-      this.$http.post(url, formData, headers)
-        .then(function (response) {
-          console.log(response);
-        }, function (error) {
-          console.log(error);
-        });
+          'X-Authorization': $cookies.get("auth")}};
+      const url = this.baseUrl + 'venues/' + this.venueId + '/photos';
+      return this.$http.post(url, formData, headers);
+    },
+    fieldIsEmpty(field) {
+      return field === null || field === "";
     },
     validateForm() {
       let formIsValid = true;
       Object.keys(this.form).forEach(f => {
-        console.log(f);
-        console.log(this.$refs[f].validate(true));
-        if (this.$refs[f].validate(true) === false) {
-          formIsValid = false;
+        console.log(this.form.photo);
+        if (f === "photo") {
+          if (this.form.photo === "") {
+            formIsValid = false;
+          }
+        } else {
+          if (this.$refs[f].validate(true) === false) {
+            formIsValid = false;
+          }
         }
       });
       return formIsValid;
     },
+    checkPhotoTooLarge(photo) {
+      const fileSizeLimit = 20000000;
+      return photo.size > fileSizeLimit;
+    },
     submit() {
       this.formHasErrors = !this.validateForm();
-      if (this.formHasErrors === false) {
-        this.sendForm();
+      const photoTooLarge = this.checkPhotoTooLarge(this.form.photo);
+      if (photoTooLarge === true) {
+        this.alerts.error = true;
+      } else if (this.formHasErrors === false) {
+        this.sendForm()
+          .then(() => {
+            console.log("success");
+            this.alerts.success = true;
+          }, () => {
+            console.log("error");
+            this.alerts.error = true;
+          });
       }
     }
-  }
+  },
+  props: ['venueId']
 }

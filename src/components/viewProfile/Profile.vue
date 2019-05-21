@@ -14,7 +14,6 @@
               <p>Username: {{ userInfo.username }}</p>
               <div v-if="this.userIsViewingOwnProfile">
                 <p>Email: {{ userInfo.email }}</p>
-                <p>Password: {{ password }}</p>
               </div>
 
             </b-col>
@@ -24,10 +23,11 @@
         <div v-if="this.userIsViewingOwnProfile" align="right">
           <b-button v-b-modal.modal-1>Edit</b-button>
         </div>
+        <div class="h-25 d-inline-block">
         <b-modal id="modal-1" @hide="getUser" title="Edit Profile">
-          <EditProfile :givenName="userInfo.givenName" :familyName="userInfo.familyName"></EditProfile>
+          <EditProfile :username="userInfo.username" :previousGivenName="userInfo.givenName" :previousFamilyName="userInfo.familyName"></EditProfile>
         </b-modal>
-
+        </div>
       </v-card>
     </v-flex>
   </v-layout>

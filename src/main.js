@@ -11,6 +11,17 @@ import SignUp from './components/signUpForm/SignUpForm.vue'
 import Login from './components/login/Login.vue'
 import EditProfile from './components/editProfile/EditProfile.vue'
 import Profile from './components/viewProfile/Profile.vue'
+import CreateVenue from './components/createVenue/CreateVenue.vue'
+import MyVenues from './components/myVenues/MyVenues.vue'
+import UploadPhoto from './components/uploadPhoto/UploadVenuePhoto.vue'
+
+import VueGeolocation from 'vue-browser-geolocation';
+Vue.use(VueGeolocation);
+
+import VueCookies from 'vue-cookies'
+Vue.use(VueCookies);
+
+VueCookies.config('7d');
 
 import BootstrapVue from 'bootstrap-vue'
 Vue.use(BootstrapVue);
@@ -37,6 +48,7 @@ Vue.http.options.emulateJSON = true;
 const routes = [
   {
     path: "/",
+    redirect: "/venues",
     component: Home
   },
   {
@@ -62,6 +74,18 @@ const routes = [
   {
     path: '/profile/:userId',
     component: Profile
+  },
+  {
+    path: '/createVenue',
+    component: CreateVenue
+  },
+  {
+    path: '/myVenues',
+    component: MyVenues
+  },
+  {
+    path: '/uploadPhoto',
+    component: UploadPhoto
   }
 ];
 

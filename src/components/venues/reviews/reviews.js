@@ -9,26 +9,33 @@ export default {
       baseUrl: "http://localhost:4941/api/v1/"
     }
   },
+  watch: {
+    $route(to, from) {
+      this.checkUserLoggedIn();
+    }
+  },
   created() {
     this.getReviews()
   },
+  mounted() {
+    this.checkUserLoggedIn()
+  },
   methods: {
     hideModal() {
-      this.$refs['add-review-modal'].hide()
+      // this.$refs['add-review-modal'].hide()
+      this.$bvModal.hide('add-review-modal');
     },
     reviewSubmittedHandler() {
       this.hideModal();
       this.getReviews();
     },
     checkUserLoggedIn() {
-      this.userIsLoggedIn = localStorage.getItem("auth") !== null;
+      this.userIsLoggedIn = $cookies.get("auth") !== null;
     },
     getReviews() {
       this.$http.get(this.baseUrl + 'venues/' + this.venueId + '/reviews')
         .then((response) => {
           this.reviews = response.body;
-          console.log("review");
-          console.log(this.reviews);
         }, (error) => {
           console.log(Error);
         });

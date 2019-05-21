@@ -9,8 +9,7 @@
 </template>
 
 <script>
-  import AppNavigation from './navigationBar/NavigationBar';
-
+  import AppNavigation from './navigationBar/NavigationBar.vue';
   export default {
     name: 'App',
     components: {

@@ -14,14 +14,26 @@ export default {
   },
   methods: {
     checkUserLoggedIn() {
-      this.userIsLoggedIn = localStorage.getItem("auth") !== null;
-      console.log(this.userIsLoggedIn);
+      this.userIsLoggedIn = $cookies.get("auth") !== null;
     },
     logoutUser() {
-      localStorage.removeItem("auth");
-      localStorage.removeItem("loggedInUserId");
+      $cookies.remove("auth");
+      $cookies.remove("loggedInUserId");
       this.navigateVenuePage();
+      document.location.reload();
       this.checkUserLoggedIn();
+    },
+    navigateProfilePage() {
+      this.$router.push("profile/" + $cookies.get("loggedInUserId"));
+    },
+    navigateVenuesPage() {
+      this.$router.push("venues");
+    },
+    navigateCreateVenuePage() {
+      this.$router.push("/createVenue");
+    },
+    navigateMyVenuesPage() {
+      this.$router.push("/myVenues");
     },
     navigateLoginPage() {
       this.$router.push("/login");
@@ -30,6 +42,9 @@ export default {
     navigateVenuePage() {
       this.$router.push("/venues");
       this.checkUserLoggedIn();
+    },
+    navigateSignUpPage() {
+      this.$router.push("/signUp");
     }
   }
 }

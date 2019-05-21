@@ -49,6 +49,18 @@
             <v-card-actions>
               <v-btn color="primary" flat @click="submitPasswordForm">Submit</v-btn>
             </v-card-actions>
+            <v-alert
+              :value="alerts.passwordError"
+              type="error"
+              dismissible
+            >Current password is incorrect, please try again
+            </v-alert>
+              <v-alert
+                :value="alerts.updateError"
+                type="error"
+                dismissible
+              >Update failed, please try again
+            </v-alert>
           </v-card-text>
         </b-tab>
       </b-tabs>

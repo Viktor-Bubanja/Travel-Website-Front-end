@@ -51,7 +51,7 @@ export default {
     },
     sendForm(form) {
       const url = this.baseUrl + 'venues/' + this.venueId + '/reviews';
-      const headers = {headers: {'X-Authorization': localStorage.getItem("auth")}};
+      const headers = {headers: {'X-Authorization': $cookies.get("auth")}};
       return this.$http.post(url, JSON.stringify(this.form), headers);
     },
     submit() {

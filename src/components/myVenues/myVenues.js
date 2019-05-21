@@ -4,7 +4,7 @@ export default {
   data() {
     return {
       venues: [],
-      userId: localStorage.getItem("loggedInUserId"),
+      userId: $cookies.get("loggedInUserId"),
       baseUrl: "http://localhost:4941/api/v1/",
     }
   },

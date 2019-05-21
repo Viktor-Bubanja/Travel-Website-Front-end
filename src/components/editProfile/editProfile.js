@@ -3,20 +3,23 @@ export default{
   data() {
     return {
       errorMessages: '',
-      givenName: "",
-      familyName: "",
+      givenName: this.previousGivenName,
+      familyName: this.previousFamilyName,
       password: "",
       currentPassword: "",
       profileFormHasErrors: "",
       passwordFormHasErrors: "",
+      alerts: {
+        updateError: false,
+        passwordError: false
+      },
       rules: {
         givenNameRules: [() => !!this.givenName || 'First name is required'],
         familyNameRules: [() => !!this.familyName || 'Last name is required'],
         passwordRules: [() => !!this.password || 'Password is required'],
         confirmPasswordRules: [() => !!this.confirmPassword || 'Confirmed password is required',
           (input) => input === this.password || 'Passwords do not match, try again'],
-        currentPasswordRules: [() => !!this.currentPassword || 'Current password is required',
-          () => this.currentPassword === localStorage.getItem("password") || 'Password does not match your current password']
+        currentPasswordRules: [() => !!this.currentPassword || 'Current password is required']
       },
       baseUrl: "http://localhost:4941/api/v1/"
     }
@@ -54,13 +57,11 @@ export default{
       return formIsValid;
     },
     sendForm(form) {
-      const userId = localStorage.getItem("loggedInUserId");
+      const userId = $cookies.get("loggedInUserId");
       const url = this.baseUrl + 'users/' + userId;
-      const headers = {headers: {'X-Authorization': localStorage.getItem("auth")}};
+      const headers = {headers: {'X-Authorization': $cookies.get("auth")}};
       return this.$http.patch(url, JSON.stringify(form), headers)
         .then(function (response) {
-          console.log(response);
-          localStorage.setItem("password", this.password);
           this.password = "";
           this.currentPassword = "";
           return response.data;
@@ -78,16 +79,73 @@ export default{
         });
       }
     },
+
+
     submitPasswordForm() {
-      this.passwordFormHasErrors = !this.validateForm(this.passwordForm);
-      if (this.passwordFormHasErrors === false) {
-        delete this.passwordForm.currentPassword;
-        this.sendForm(this.passwordForm)
-          .then((responseData) => {
-          }, (responseData) => {
-          });
-      }
+      const newPasswordForm = {
+        "password": this.password
+      };
+      const loginData = {
+        "username": this.username,
+        "password": this.currentPassword};
+
+      const headers = {headers: {'X-Authorization': $cookies.get("auth")}};
+      this.$http.post("http://localhost:4941/api/v1/users/login", loginData, {
+        headers: headers
+      }).then(function(response) {
+          localStorage.setItem("authToken", response.data.token);
+          this.sendForm(newPasswordForm);
+        }, function(error) {
+          console.log(error);
+        });
     }
+
+
+
+
+      // this.passwordFormHasErrors = !this.validateForm(this.passwordForm);
+      // if (this.passwordFormHasErrors === false) {
+      //   const headers = {headers: {'X-Authorization': $cookies.get("auth")}};
+      //   console.log(headers);
+      //   this.$http.get(this.baseUrl + 'users/' + $cookies.get("loggedInUserId"), headers)
+      //     .then((response) => {
+      //       return response.body;
+      //     }, (error) => {
+      //       console.log("error on logging in: ");
+      //       console.log(error);
+      //     })
+      //     .then((user) => {
+      //       console.log("getting user credentials to log in");
+      //       console.log("user:  ");
+      //       console.log(user);
+      //       const loginBody = JSON.stringify(
+      //         {
+      //           "username": user.username,
+      //           "password": this.passwordForm.currentPassword});
+      //       this.$http.post(this.baseUrl + 'users/login', loginBody)
+      //         .then((response) => {
+      //           console.log("passwords matched");
+      //           delete this.passwordForm.currentPassword;
+      //           this.sendForm(this.passwordForm)
+      //             .then((responseData) => {
+      //               console.log("password changed I think: response data: ");
+      //               console.log(responseData);
+      //             }, (error) => {
+      //               console.log("");
+      //               this.alerts.updateError = true;
+      //               this.alerts.passwordError = false;
+      //             });
+      //         }, (error) => {
+      //           console.log("heerree");
+      //           this.alerts.updateError = false;
+      //           this.alerts.passwordError = true;
+      //         })
+      //     }, (error) => {
+      //       console.log(error);
+      //       this.alerts.updateError = false;
+      //     });
+      // }
+    // }
   },
-  props: ['previousFamilyName', 'previousGivenName']
+  props: ['username', 'previousFamilyName', 'previousGivenName']
 }

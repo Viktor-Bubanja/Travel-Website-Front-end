@@ -58,11 +58,9 @@ export default{
         console.log(this.sendForm(this.form));
         this.sendForm(this.form)
           .then(function (response) {
-            console.log(response);
-            console.log(localStorage);
-            localStorage.setItem("auth", response.body.token);
-            localStorage.setItem("loggedInUserId", response.body.userId);
-            localStorage.setItem("password", this.password);
+            console.log(response.body);
+            $cookies.set("auth", response.body.token);
+            $cookies.set("loggedInUserId", response.body.userId);
             this.$router.push("/venues");
           }, function (response) {
             console.log("error");

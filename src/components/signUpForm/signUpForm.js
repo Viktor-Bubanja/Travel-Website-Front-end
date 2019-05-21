@@ -55,11 +55,8 @@ export default{
       this.username = username;
     },
     validateForm() {
-      console.log("HERE");
       let formIsValid = true;
       Object.keys(this.form).forEach(f => {
-        console.log(f);
-        console.log(this.$refs[f].validate(true));
         if (this.$refs[f].validate(true) === false) {
           formIsValid = false;
         }
@@ -70,6 +67,16 @@ export default{
       const url = this.baseUrl + 'users';
       return this.$http.post(url, JSON.stringify(this.form))
     },
+    login(form) {
+      console.log(form);
+
+      const loginForm = {
+        "username": form.username,
+        "email": form.email,
+        "password": form.password
+      };
+      return this.$http.post(this.baseUrl + 'users/login', JSON.stringify(loginForm));
+    },
     submit () {
       this.errorMessages = '';
       this.formHasErrors = !this.validateForm();
@@ -77,15 +84,17 @@ export default{
         delete this.form.confirmPassword;
         this.sendForm(this.form)
           .then(function (response) {
-            console.log(response);
-            console.log("here");
-            localStorage.setItem("auth", response.body.token);
-            localStorage.setItem("loggedInUserId", response.body.userId);
-            localStorage.setItem("password", this.password);
-            this.$router.push("/venues")
+            this.login(this.form)
+              .then((response) => {
+                $cookies.set("auth", response.body.token);
+                $cookies.set("loggedInUserId", response.body.userId);
+                this.$router.push("/venues")
+              }, (error) => {
+                this.error = error;
+                this.errorFlag = true;
+              });
+
           }, function (error) {
-            console.log("here2");
-            console.log("error");
             this.errorMessages = "Email or username already in use";
             this.usernameEmailUnique = false;
           });

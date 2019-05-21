@@ -1,6 +1,5 @@
 <template>
   <v-card>
-    <p>{{review}}</p>
     <p>{{ review.reviewBody }}</p>
     <p>Star rating: {{ review.starRating }}</p>
     <p>Cost rating: {{ review.costRating }}</p>

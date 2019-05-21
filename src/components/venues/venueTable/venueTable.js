@@ -1,15 +1,18 @@
 import Reviews from '../reviews/Reviews.vue'
+import UploadVenuePhoto from '../../uploadPhoto/UploadVenuePhoto.vue'
+import VenueDetails from '../venueDetails/VenueDetails.vue'
 
 export default {
   data() {
     return {
+      userLocation: {},
       venues: [],
       unfilteredVenueTableData: [],
       currentPage: 1,
       rowsPerPage: 10,
       fields: {
-        name: {
-          sortable: false
+        venueName: {
+          sortable: false,
         },
         city: {
           sortable: false
@@ -33,22 +36,23 @@ export default {
   },
   watch: {
     tableData(){
-      this.retrieveFullVenueData(this.tableData);
+      this.formatVenueData(this.tableData);
     }
   },
   mounted() {
-    this.retrieveFullVenueData(this.tableData);
+    this.formatVenueData(this.tableData);
   },
   computed: {
     numberRows() {
-      return this.venues.length;
+      return this.filteredVenueTableData.length;
     },
     filteredVenueTableData() {
       let filteredData = this.unfilteredVenueTableData;
+      console.log(filteredData);
       if (this.filters) {
         if (this.filters.nameKeyword) {
           filteredData = filteredData.filter(
-            item => item.name.toLowerCase().includes(this.filters.nameKeyword.toLowerCase()));
+            item => item.venueName.toLowerCase().includes(this.filters.nameKeyword.toLowerCase()));
         }
         if (this.filters.categoryKeyword) {
           filteredData = filteredData.filter(
@@ -67,13 +71,12 @@ export default {
     }
   },
   methods: {
-    getReviews(venueId) {
-      return this.$http.get(this.baseUrl + 'venues/' + venueId + '/reviews');
+    expandAdditionalInfo(row) {
+      row._showDetails = !row._showDetails;
     },
-    retrieveFullVenueData: function (venues) {
-      console.log("venue table");
-      console.log(venues);
-      for (let i = 0; i < venues.length; i++) {
+    formatVenueData: function (venues) {
+
+      for (let i in venues) {
         let url = this.baseUrl + "venues/" + venues[i].venueId;
         let venueData = {};
         let venue = venues[i];
@@ -90,34 +93,20 @@ export default {
           venueData.starRating = venue.meanStarRating !== null ? venue.meanStarRating : 3;
           venueData.costRating = venue.modeCostRating !== null ? venue.modeCostRating : 0;
           venueData.venueId = venue.venueId;
-          this.getReviews(venue.venueId)
-            .then(function(response) {
-              venueData.reviews = response.body;
-              for (let i in venueData.reviews) {
-                let date = new Date(venueData.reviews[i].timePosted);
-                let year = date.getFullYear();
-                let month = date.getMonth()+1;
-                let dt = date.getDate();
-                if (dt < 10) {
-                  dt = '0' + dt;
-                }
-                if (month < 10) {
-                  month = '0' + month;
-                }
-                venueData.reviews[i].timePosted = dt + '/' + month + '/' + year;
-              }
-            }, function(error) {
-              this.error = error;
-              this.errorFlag = true;
-            });
+          venueData.primaryPhoto = venue.primaryPhoto;
+          venueData._showDetails =  false;
           this.unfilteredVenueTableData.push(venueData);
         });
       }
-
+    },
+    reload() {
+      document.location.reload();
     }
   },
   props: ['tableData', 'filters'],
   components: {
-    Reviews
+    Reviews,
+    UploadVenuePhoto,
+    VenueDetails
   }
 }

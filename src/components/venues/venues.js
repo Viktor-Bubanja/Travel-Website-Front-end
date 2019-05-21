@@ -29,30 +29,28 @@ export default {
       cities.unshift("");
       return cities;
     },
-
   },
   created() {
     this.initialise()
   },
   methods: {
     initialise: function() {
-      this.retrieveVenues();
-      this.retrieveCategories();
+      this.getVenues();
+      this.getCategories();
     },
-    retrieveVenues: function () {
+    getVenues: function () {
+      console.log("called");
       let url = this.baseUrl + "venues";
       url += "/?sortBy=STAR_RATING";
       this.$http.get(url)
         .then(function (response) {
           this.venues = response.data;
-          console.log("retrieving venues done");
-          console.log(this.venues);
         }, function (error) {
           this.error = error;
           this.errorFlag = true;
         });
     },
-    retrieveCategories() {
+    getCategories() {
       this.$http.get(this.baseUrl + 'categories')
         .then(function (response) {
           this.categories = response.body.map(a => a.categoryName);

@@ -8,7 +8,7 @@
         <v-container>
         <v-flex>
         <v-card id="venues">
-          <v-card-title class="headline font-weight-regular blue-grey white--text">Venues</v-card-title>
+          <v-card-title class="headline font-weight-regular blue-grey white--text">Browse Venues</v-card-title>
           <v-subheader class="pa-0">Choose a city to explore</v-subheader>
           <v-autocomplete
             v-model="filters.cityKeyword"
@@ -44,7 +44,6 @@
                   :max="5"
                   :tick-labels="starSliderTickValues"
                 ></v-slider>
-
                 <v-subheader class="pl-0">Maximum cost rating</v-subheader>
                 <v-slider
                   v-model="filters.costRatingSliderValue"
@@ -52,22 +51,19 @@
                   :max="4"
                   :tick-labels="costSliderTickValues"
                 ></v-slider>
-
               </b-card>
             </b-collapse>
           </div>
-          <VenueTable :tableData="venues" :filters="filters"></VenueTable>
+          <VenueTable @venue-updated="getVenues" :tableData="venues" :filters="filters"></VenueTable>
         </v-card>
         </v-flex>
         </v-container>
       </v-app>
-
     </div>
   </div>
 </template>
 
 <script src="./venues.js"></script>
-
 
 <style lang="css" scoped>
   #venues {
@@ -79,14 +75,6 @@
     width: 500px;
     font-size: 14px;
     line-height: 1.5;
-  }
-
-  #module a.collapsed:after  {
-    content: '+ Show More';
-  }
-
-  #module a:not(.collapsed):after {
-    content: '- Show Less';
   }
   .button {
     background-color: white;

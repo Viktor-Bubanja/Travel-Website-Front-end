@@ -1,4 +1,5 @@
 import EditProfile from '../editProfile/EditProfile.vue'
+
 export default {
   data() {
     return {
@@ -6,25 +7,24 @@ export default {
         givenName: "",
         familyName: "",
         username: "",
-        email: ""
+        email: "",
+        profilePhoto: null
       },
-      password: localStorage.getItem("password"),
       showModal: false,
       baseUrl: "http://localhost:4941/api/v1/"
     }
   },
   computed: {
     userIsAuthenticated() {
-      return localStorage.getItem("auth") !== null;
+      return $cookies.get("auth") !== null;
     },
     userIsViewingOwnProfile() {
-      return this.$route.params.userId === localStorage.getItem("loggedInUserId");
+      return this.$route.params.userId === $cookies.get("loggedInUserId");
     }
   },
   methods: {
     getUser() {
-      console.log("get user called");
-      const headers = {headers: {'X-Authorization': localStorage.getItem("auth")}};
+      const headers = {headers: {'X-Authorization': $cookies.get("auth")}};
       this.$http.get(this.baseUrl + 'users/' + this.$route.params.userId, headers)
         .then(function(response) {
           this.userInfo = response.body;
@@ -33,6 +33,7 @@ export default {
         })
     }
   },
+
   created() {
     this.getUser()
   },
