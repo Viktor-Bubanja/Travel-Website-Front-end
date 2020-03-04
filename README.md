@@ -1,18 +1,10 @@
-# assignment2
+# Travel website Frontend
 
-> Assignment 2
+This repository contains the frontend for a travel website built as a University project.
+The project is separated the frontend, contained in this repository, and the backend, contained in the Travel-Website-RESTful-API repository: https://github.com/Viktor-Bubanja/Travel-Website-RESTful-API
+The website is made for travellers to explore and review various venues and locations.
+Users can create a profile and upload a photo, view venues and locations, leave reviews, as well as administer their own venues with photos and descriptions.
 
-## Build Setup
+The backend and frontend are both built using JavaScript, using Node.js and Vue.js.
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+Running the project locally requires a connection to the University of Canterbury's local SQL database, but feel free to have a look at the code.
